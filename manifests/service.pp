@@ -104,6 +104,7 @@ class kubernetes::service (
   }
 
   service { 'kubelet':
-    enable => true
+    enable => true,
+    ensure => 'running',
   }
 }

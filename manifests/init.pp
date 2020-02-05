@@ -279,6 +279,10 @@
 #  Use this for critical Kubelet settings such as `pod-infra-container-image` which may be problematic to configure via kubelet_extra_config
 #  Defaults to []
 #
+# [*kubelet_state]
+#  A string that represents kubelet's service state: running, stopped...
+#  Defaults to undef
+#
 # [*proxy_mode*]
 # The mode for kubeproxy to run. It should be one of: "" (default), "userspace", "kernelspace", "iptables", or "ipvs".
 # Defaults to ""
@@ -467,6 +471,7 @@ class kubernetes (
   Optional[Hash] $kubeadm_extra_config               = undef,
   Optional[Hash] $kubelet_extra_config               = undef,
   Optional[Array] $kubelet_extra_arguments           = [],
+  Optioanl[String] $kubelet_state                    = undef,
   Optional[String] $proxy_mode                       = '',
   Optional[String] $runc_version                     = '1.0.0-rc5',
   Optional[String] $runc_source                      =

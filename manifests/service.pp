@@ -8,6 +8,7 @@ class kubernetes::service (
   String $kubernetes_version        = $kubernetes::kubernetes_version,
   Optional[String] $cloud_provider  = $kubernetes::cloud_provider,
   Optional[String] $cloud_config    = $kubernetes::cloud_config,
+  Optional[String] $kubelet_state   = $kubernetes::kubelet_state,
 ){
   file { '/etc/systemd/system/kubelet.service.d':
     ensure => directory,
@@ -105,6 +106,6 @@ class kubernetes::service (
 
   service { 'kubelet':
     enable => true,
-    ensure => 'running',
+    ensure => $kubelet_state
   }
 }

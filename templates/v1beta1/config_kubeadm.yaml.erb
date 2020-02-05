@@ -97,6 +97,7 @@ networking:
 <%- if @kubeadm_extra_config  -%>
 <%= @kubeadm_extra_config_yaml %>
 <%- end -%>
+<%- if @kube_proxy_enabled -%>
 ---
 apiVersion: kubeproxy.config.k8s.io/v1alpha1
 bindAddress: 0.0.0.0
@@ -135,3 +136,4 @@ oomScoreAdj: -999
 portRange: ""
 resourceContainer: /kube-proxy
 udpIdleTimeout: 250ms
+<%- end -%>

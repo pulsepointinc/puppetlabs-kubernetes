@@ -287,6 +287,10 @@
 # The mode for kubeproxy to run. It should be one of: "" (default), "userspace", "kernelspace", "iptables", or "ipvs".
 # Defaults to ""
 #
+# [*kube_proxy_enabled*]
+#  Controls if kubeadm will try to install kube-proxy.
+#  Defaults to true
+#
 # [*kubernetes_apt_location*]
 #  The APT repo URL for the Kubernetes packages.
 #  Defaults to https://apt.kubernetes.io
@@ -473,6 +477,7 @@ class kubernetes (
   Optional[Array] $kubelet_extra_arguments           = [],
   Optioanl[String] $kubelet_state                    = undef,
   Optional[String] $proxy_mode                       = '',
+  Boolean $kube_proxy_enabled                        = true,
   Optional[String] $runc_version                     = '1.0.0-rc5',
   Optional[String] $runc_source                      =
     "https://github.com/opencontainers/runc/releases/download/v${runc_version}/runc.amd64",

@@ -569,6 +569,7 @@ class kubernetes (
     contain kubernetes::kube_addons
 
     Class['kubernetes::repos']
+      -> Class['kubernetes::container_runtime']
       -> Class['kubernetes::packages']
       -> Class['kubernetes::config::kubeadm']
       -> Class['kubernetes::service']
@@ -588,6 +589,7 @@ class kubernetes (
     contain kubernetes::cluster_roles
 
     Class['kubernetes::repos']
+      -> Class['kubernetes::container_runtime']
       -> Class['kubernetes::packages']
       -> Class['kubernetes::service']
       -> Class['kubernetes::cluster_roles']

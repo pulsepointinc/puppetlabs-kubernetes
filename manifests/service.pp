@@ -20,50 +20,6 @@ class kubernetes::service (
     refreshonly => true,
   }
 
-  case $container_runtime {
-    'docker': {
-
-      if $manage_docker == true {
-        service { 'docker':
-          ensure => running,
-          enable => true,
-        }
-      }
-
-    }
-
-    'cri_containerd': {
-      file { '/etc/systemd/system/kubelet.service.d/0-containerd.conf':
-        ensure  => file,
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0644',
-        content => template('kubernetes/0-containerd.conf.erb'),
-        require => File['/etc/systemd/system/kubelet.service.d'],
-        notify  => Exec['kubernetes-systemd-reload'],
-      }
-
-      file { '/etc/systemd/system/containerd.service':
-        ensure  => file,
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0644',
-        content => template('kubernetes/containerd.service.erb'),
-        notify  => Exec['kubernetes-systemd-reload'],
-      }
-
-      service { 'containerd':
-        ensure  => running,
-        enable  => true,
-        require => File['/etc/systemd/system/kubelet.service.d/0-containerd.conf'],
-      }
-    }
-
-    default: {
-      fail(translate('Please specify a valid container runtime'))
-    }
-  }
-
   if $controller and $manage_etcd {
     service { 'etcd':
       ensure => running,

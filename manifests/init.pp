@@ -475,7 +475,7 @@ class kubernetes (
   Optional[Hash] $kubeadm_extra_config               = undef,
   Optional[Hash] $kubelet_extra_config               = undef,
   Optional[Array] $kubelet_extra_arguments           = [],
-  Optioanl[String] $kubelet_state                    = undef,
+  Optional[String] $kubelet_state                    = undef,
   Optional[String] $proxy_mode                       = '',
   Boolean $kube_proxy_enabled                        = true,
   Optional[String] $runc_version                     = '1.0.0-rc5',

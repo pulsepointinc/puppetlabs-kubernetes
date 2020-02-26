@@ -562,6 +562,7 @@ class kubernetes (
     include kubernetes::cluster_roles
     include kubernetes::kube_addons
     contain kubernetes::repos
+    contain kubernetes::container_runtime
     contain kubernetes::packages
     contain kubernetes::config::kubeadm
     contain kubernetes::service
@@ -579,6 +580,7 @@ class kubernetes (
 
   if $worker {
     contain kubernetes::repos
+    contain kubernetes::container_runtime
     contain kubernetes::packages
     # K8s 1.10/1.11 can't use config files
     unless $kubernetes_version =~ /^1.1(0|1)/ {

@@ -94,7 +94,7 @@
 #  Defaults to https://github.com/coreos/etcd/releases/download/v${etcd_version}/${etcd_archive}
 #
 # [*etcd_install_method*]
-#  The method on how to install etcd. Can be either wget (using etcd_source) or package (using $etcd_package_name)
+#  The method on how to install etcd. Can be either wget (using etcd_source) or package (using $etcd_package_name) or kubeadm
 #  Defaults to wget
 #
 # [*etcd_package_name*]
@@ -169,6 +169,10 @@
 # [*etcdpeer_key*]
 #   This is the peer certificate key data for the etcd cluster. This must be passed as string not as a file.
 #   Defaults to undef
+#
+# [*dns_type*]
+#   Configures DNS type in cluster.
+#   Defaults to CoreDNS
 #
 # [*apiserver_extra_arguments*]
 #   A string array of extra arguments to be passed to the api server.
@@ -431,6 +435,7 @@ class kubernetes (
   Boolean $manage_docker                             = true,
   Boolean $manage_etcd                               = true,
   Optional[String] $kube_api_advertise_address       = undef,
+  Optional[String] $dns_type                         = 'CoreDNS',
   Optional[String] $etcd_version                     = '3.2.18',
   Optional[String] $etcd_hostname                    = $facts['hostname'],
   Optional[String] $etcd_ip                          = undef,

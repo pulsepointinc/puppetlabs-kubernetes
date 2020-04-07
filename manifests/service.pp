@@ -5,6 +5,7 @@ class kubernetes::service (
   Boolean $controller               = $kubernetes::controller,
   Boolean $manage_docker            = $kubernetes::manage_docker,
   Boolean $manage_etcd              = $kubernetes::manage_etcd,
+  String $etcd_install_method       = $kubernetes::etcd_install_method,
   String $kubernetes_version        = $kubernetes::kubernetes_version,
   Optional[String] $cloud_provider  = $kubernetes::cloud_provider,
   Optional[String] $cloud_config    = $kubernetes::cloud_config,
@@ -20,7 +21,7 @@ class kubernetes::service (
     refreshonly => true,
   }
 
-  if $controller and $manage_etcd {
+  if $controller and $manage_etcd and $etcd_install_method != 'kubeadm' {
     service { 'etcd':
       ensure => running,
       enable => true,

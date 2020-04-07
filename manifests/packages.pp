@@ -71,7 +71,7 @@ class kubernetes::packages (
         cleanup         => true,
         creates         => ['/usr/local/bin/etcd', '/usr/local/bin/etcdctl']
       }
-    } else {
+    } elsif $etcd_install_method == 'package' {
       package { $etcd_package_name:
         ensure => $etcd_version,
       }

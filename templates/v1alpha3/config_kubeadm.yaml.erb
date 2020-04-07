@@ -32,6 +32,12 @@ nodeRegistration:
 apiVersion: kubeadm.k8s.io/v1alpha3
 CertificatesDir: /etc/kubernetes/pki
 etcd:
+<%- if @etcd_install_methon == 'kubeadm' -%>
+    local:
+      imageTag: <%= @etcd_version %>
+      extraArgs:
+        initial-cluster: <%= @etcd_peers.map { |peer| "https://#{b}:2380" }.join(',') %>
+<%- else -%>
     external:
         endpoints:
     <% @etcd_peers.each do |peer| -%>
@@ -41,6 +47,7 @@ etcd:
         caFile: /etc/kubernetes/pki/etcd/ca.crt
         certFile: /etc/kubernetes/pki/etcd/client.crt
         keyFile: /etc/kubernetes/pki/etcd/client.key
+<%- end -%>
 imageRepository: <%= @image_repository %>
 kind: ClusterConfiguration
 kubernetesVersion: v<%= @kubernetes_version %>

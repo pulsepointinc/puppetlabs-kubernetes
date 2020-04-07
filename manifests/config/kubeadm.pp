@@ -6,6 +6,7 @@ class kubernetes::config::kubeadm (
   String $etcd_install_method = $kubernetes::etcd_install_method,
   String $kubernetes_version  = $kubernetes::kubernetes_version,
   String $kubernetes_cluster_name  = $kubernetes::kubernetes_cluster_name,
+  Optional[$dns_type] = $kubernetes::dns_type,
   String $etcd_ca_key = $kubernetes::etcd_ca_key,
   String $etcd_ca_crt = $kubernetes::etcd_ca_crt,
   String $etcdclient_key = $kubernetes::etcdclient_key,
@@ -82,7 +83,7 @@ class kubernetes::config::kubeadm (
   }
 
 
-  if $manage_etcd {
+  if $manage_etcd and $etcd_install_method != 'kubeadm' {
     if $etcd_install_method == 'wget' {
       file { '/etc/systemd/system/etcd.service':
         ensure  => present,

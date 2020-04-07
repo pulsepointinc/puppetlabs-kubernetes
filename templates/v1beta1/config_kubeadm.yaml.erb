@@ -76,9 +76,17 @@ controllerManager:
     pathType: <%= config['pathType'] %>
   <%- end -%>
 <%- end -%>
+<%- if @dns_type -%>
 dns:
-  type: CoreDNS
+  type: <%= @dns_type %>
+<%- end -%>
 etcd:
+<%- if @etcd_install_methon == 'kubeadm' -%>
+    local:
+      imageTag: <%= @etcd_version %>
+      extraArgs:
+        initial-cluster: <%= @etcd_peers.map { |peer| "https://#{b}:2380" }.join(',') %>
+<%- else -%>
     external:
         caFile: /etc/kubernetes/pki/etcd/ca.crt
         certFile: /etc/kubernetes/pki/etcd/client.crt
@@ -87,6 +95,7 @@ etcd:
           - https://<%= peer %>:2379
 <% end -%>
         keyFile: /etc/kubernetes/pki/etcd/client.key
+<% end %>
 imageRepository:  <%= @image_repository %>
 kind: ClusterConfiguration
 kubernetesVersion: v<%= @kubernetes_version %>

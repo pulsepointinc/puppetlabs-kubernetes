@@ -10,10 +10,10 @@ class kubernetes::config::kubeadm (
   String $etcd_ca_crt = $kubernetes::etcd_ca_crt,
   String $etcdclient_key = $kubernetes::etcdclient_key,
   String $etcdclient_crt = $kubernetes::etcdclient_crt,
-  String $etcdserver_crt = $kubernetes::etcdserver_crt,
-  String $etcdserver_key = $kubernetes::etcdserver_key,
-  String $etcdpeer_crt = $kubernetes::etcdpeer_crt,
-  String $etcdpeer_key = $kubernetes::etcdpeer_key,
+  Optional[String] $etcdserver_crt = $kubernetes::etcdserver_crt,
+  Optional[String] $etcdserver_key = $kubernetes::etcdserver_key,
+  Optional[String] $etcdpeer_crt = $kubernetes::etcdpeer_crt,
+  Optional[String] $etcdpeer_key = $kubernetes::etcdpeer_key,
   Array $etcd_peers = $kubernetes::etcd_peers,
   String $etcd_hostname = $kubernetes::etcd_hostname,
   String $etcd_ip = $kubernetes::etcd_ip,
@@ -56,8 +56,6 @@ class kubernetes::config::kubeadm (
   }
 
   $kube_dirs = ['/etc/kubernetes','/etc/kubernetes/manifests','/etc/kubernetes/pki','/etc/kubernetes/pki/etcd']
-  $etcd = ['ca.crt', 'ca.key', 'client.crt', 'client.key','peer.crt', 'peer.key', 'server.crt', 'server.key']
-  $pki = ['ca.crt','ca.key','front-proxy-ca.crt','front-proxy-ca.key','sa.pub','sa.key']
   $kube_dirs.each | String $dir |  {
     file  { $dir :
       ensure  => directory,
@@ -66,14 +64,25 @@ class kubernetes::config::kubeadm (
     }
   }
 
-  if $manage_etcd {
-    $etcd.each | String $etcd_files | {
-      file { "/etc/kubernetes/pki/etcd/${etcd_files}":
+  $etcd = ['ca.crt', 'ca.key', 'client.crt', 'client.key','peer.crt', 'peer.key', 'server.crt', 'server.key']
+  $pki = ['ca.crt','ca.key','front-proxy-ca.crt','front-proxy-ca.key','sa.pub','sa.key']
+
+  $etcd_pki = $etcd.map | String $etcd_pki | { "etcd/${etcd_pki}" }
+  concat($pki, $etcd_pki).each | String $pki_file | {
+    $pki_content = template("kubernetes/${pki_file}.erb")
+
+    # checking if renderred template is not empty
+    if $pki_content =~ /[[:alnum:]]+/ {
+      file { "/etc/kubernetes/pki/${pki_file}":
         ensure  => present,
-        content => template("kubernetes/etcd/${etcd_files}.erb"),
+        content => $pki_content,
         mode    => '0600',
       }
     }
+  }
+
+
+  if $manage_etcd {
     if $etcd_install_method == 'wget' {
       file { '/etc/systemd/system/etcd.service':
         ensure  => present,
@@ -84,14 +93,6 @@ class kubernetes::config::kubeadm (
         ensure  => present,
         content => template('kubernetes/etcd/etcd.erb'),
       }
-    }
-  }
-
-  $pki.each | String $pki_files | {
-    file {"/etc/kubernetes/pki/${pki_files}":
-      ensure  => present,
-      content => template("kubernetes/pki/${pki_files}.erb"),
-      mode    => '0600',
     }
   }
 

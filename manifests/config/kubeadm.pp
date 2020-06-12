@@ -6,7 +6,7 @@ class kubernetes::config::kubeadm (
   String $etcd_install_method = $kubernetes::etcd_install_method,
   String $kubernetes_version  = $kubernetes::kubernetes_version,
   String $kubernetes_cluster_name  = $kubernetes::kubernetes_cluster_name,
-  Optional[String] = $kubernetes::dns_type,
+  Optional[String] $dns_type = $kubernetes::dns_type,
   String $etcd_ca_key = $kubernetes::etcd_ca_key,
   String $etcd_ca_crt = $kubernetes::etcd_ca_crt,
   String $etcdclient_key = $kubernetes::etcdclient_key,

@@ -65,10 +65,11 @@ class kubernetes::config::kubeadm (
     }
   }
 
-  $etcd = ['ca.crt', 'ca.key', 'client.crt', 'client.key','peer.crt', 'peer.key', 'server.crt', 'server.key']
-  $pki = ['ca.crt','ca.key','front-proxy-ca.crt','front-proxy-ca.key','sa.pub','sa.key']
+  $etcd_pki_templates = ['ca.crt', 'ca.key', 'client.crt', 'client.key','peer.crt', 'peer.key', 'server.crt', 'server.key']
+  $kube_pki_templates = ['ca.crt','ca.key','front-proxy-ca.crt','front-proxy-ca.key','sa.pub','sa.key']
 
-  $etcd_pki = $etcd.map | String $etcd_pki | { "etcd/${etcd_pki}" }
+  $etcd_pki = $etcd_pki_templates.map | String $pki | { "etcd/${pki}" }
+  $pki = $kube_pki_templates.map |String $pki | { "pki/${pki}" }
   concat($pki, $etcd_pki).each | String $pki_file | {
     $pki_content = template("kubernetes/${pki_file}.erb")
 

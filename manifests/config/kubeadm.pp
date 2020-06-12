@@ -75,7 +75,7 @@ class kubernetes::config::kubeadm (
 
     # checking if renderred template is not empty
     if $pki_content =~ /[[:alnum:]]+/ {
-      file { "/etc/kubernetes/pki/${regsubst($pki_file, 'pki/', '')}":
+      file { "/etc/kubernetes/pki/${regsubst($pki_file, 'pki\/', '')}":
         ensure  => present,
         content => $pki_content,
         mode    => '0600',
